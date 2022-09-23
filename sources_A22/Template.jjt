@@ -144,13 +144,13 @@ TOKEN :
 // SYNTAX ANALYSIS
 //
 
-//void WhileStmt(){..}
 //void DoWhileStmt(){
 //}
 //void IfStmt(){
 //}
 //void ForStmt(){
 //}
+
 
 ASTProgram Program() : { }
 {
@@ -165,8 +165,11 @@ void Block() : { }
 
 void Stmt() : { }
 {
-	AssignStmt() <SEMICOLON> |
-	WhileStmt()
+	AssignStmt() <SEMICOLON> | IfStmt() | WhileStmt()
+}
+
+void BlockStmt(): {} {
+<LACC> Block() <RACC>
 }
 
 void AssignStmt() : { Token t;}
@@ -174,6 +177,20 @@ void AssignStmt() : { Token t;}
 	Identifier() <ASSIGN> Expr()
 }
 
+void WhileStmt() : {}
+{
+    <WHILE> <LPAREN> <INTEGER> <RPAREN> Stmt()
+}
+/*
+void DoWhileStmt(){
+}*/
+
+// 2.2
+void IfStmt(): {} {
+    <IF> <LPAREN> Expr() <RPAREN> (Stmt() | BlockStmt())
+    (LOOKAHEAD(2) <ELSE> (IfStmt()))*
+    (LOOKAHEAD(2) <ELSE> (Stmt() | BlockStmt()))*
+}
 
 void Expr() : {}
 {
@@ -186,10 +203,6 @@ void BasicExpr() : {}
 	IntValue()
 }
 
-void WhileStmt() : {}
-{
-    "while" "(" <INTEGER> ")" Stmt()
-}
 
 
 
