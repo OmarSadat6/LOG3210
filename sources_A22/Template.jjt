@@ -84,7 +84,8 @@ TOKEN :
 	< BOOL: "bool"> |
 	< PRINT: "print" > |
 	< INPUT: "input" > |
-	< IN: "in" >
+	< IN: "in" > |
+	< FOR: "for" >
 	// À compléter au besoin
 }
 
@@ -157,7 +158,7 @@ void Block() : { }
 
 void Stmt() : { }
 {
-	AssignStmt() <SEMICOLON> | IfStmt()
+	AssignStmt() <SEMICOLON> | IfStmt() | ForStmt()
 }
 
 void BlockStmt(): {} {
@@ -179,6 +180,10 @@ void IfStmt(): {} {
     <IF> <LPAREN> Expr() <RPAREN> (Stmt() | BlockStmt())
     (LOOKAHEAD(2) <ELSE> (IfStmt()))*
     (LOOKAHEAD(2) <ELSE> (Stmt() | BlockStmt()))*
+}
+// 2.3
+void ForStmt(): {} {
+    <FOR> <LPAREN>(AssignStmt())? <SEMICOLON> (Expr())? <SEMICOLON> (AssignStmt())? <RPAREN> (BlockStmt() | Stmt())
 }
 
 void Expr() : {}
