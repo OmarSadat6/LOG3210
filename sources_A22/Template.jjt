@@ -85,7 +85,9 @@ TOKEN :
 	< PRINT: "print" > |
 	< INPUT: "input" > |
 	< IN: "in" > |
-	< FOR: "for" >
+	< FOR: "for" > |
+	< WHILE: "while" >
+
 	// À compléter au besoin
 }
 
@@ -144,6 +146,13 @@ TOKEN :
 // SYNTAX ANALYSIS
 //
 
+//void DoWhileStmt(){
+//}
+//void IfStmt(){
+//}
+//void ForStmt(){
+//}
+
 
 ASTProgram Program() : { }
 {
@@ -158,7 +167,8 @@ void Block() : { }
 
 void Stmt() : { }
 {
-	AssignStmt() <SEMICOLON> | IfStmt() | ForStmt()
+
+	AssignStmt() <SEMICOLON> | IfStmt() | WhileStmt() | ForStmt()
 }
 
 void BlockStmt(): {} {
@@ -170,8 +180,12 @@ void AssignStmt() : { Token t;}
 	Identifier() <ASSIGN> Expr()
 }
 
-/*void WhileStmt(){
+void WhileStmt() : {}
+{
+    <WHILE> <LPAREN> <INTEGER> <RPAREN> Stmt()
 }
+
+/*
 void DoWhileStmt(){
 }*/
 
@@ -196,6 +210,7 @@ void BasicExpr() : {}
 	LOOKAHEAD(2) Identifier() |
 	IntValue()
 }
+
 
 
 
