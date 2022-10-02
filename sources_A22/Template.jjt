@@ -86,8 +86,8 @@ TOKEN :
 	< INPUT: "input" > |
 	< IN: "in" > |
 	< FOR: "for" > |
-	< WHILE: "while" >
-
+	< WHILE: "while" > |
+	<DO: "do">
 	// À compléter au besoin
 }
 
@@ -146,14 +146,6 @@ TOKEN :
 // SYNTAX ANALYSIS
 //
 
-//void DoWhileStmt(){
-//}
-//void IfStmt(){
-//}
-//void ForStmt(){
-//}
-
-
 ASTProgram Program() : { }
 {
 	Block() <EOF> { return jjtThis;  }
@@ -168,11 +160,11 @@ void Block() : { }
 void Stmt() : { }
 {
 
-	AssignStmt() <SEMICOLON> | IfStmt() | WhileStmt() | ForStmt()
+	AssignStmt() <SEMICOLON> | WhileStmt() | DoWhileStmt() | IfStmt() | ForStmt()
 }
 
 void BlockStmt(): {} {
-<LACC> Block() <RACC>
+    <LACC> Block() <RACC>
 }
 
 void AssignStmt() : { Token t;}
@@ -180,14 +172,26 @@ void AssignStmt() : { Token t;}
 	Identifier() <ASSIGN> Expr()
 }
 
-void WhileStmt() : {}
+// 2.1
+void WhileCondition() : {}
 {
-    <WHILE> <LPAREN> <INTEGER> <RPAREN> Stmt()
+    <WHILE> <LPAREN> <INTEGER> <RPAREN> (<SEMICOLON>)?
 }
 
-/*
-void DoWhileStmt(){
-}*/
+void Body() : {}
+{
+    (<LACC>)? (LOOKAHEAD(2) AssignStmt() <SEMICOLON>)+ (<RACC>)?
+}
+
+void WhileStmt() : {}
+{
+    WhileCondition() Body()
+}
+
+void DoWhileStmt() : {}
+{
+    <DO> Body() WhileCondition()
+}
 
 // 2.2
 void IfStmt(): {} {
